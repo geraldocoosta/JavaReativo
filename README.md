@@ -2,7 +2,7 @@
 
 ## O problema da responsividade
 
-Suponde que uma resuição leva em média 200 ms (5 RPS) e temos um servidor tomcat com 300 threads no pool, podemos concluir que suportamos 1500 requisições por segundo
+Suponde que uma requição leva em média 200 ms (5 RPS) e temos um servidor tomcat com 300 threads no pool, podemos concluir que suportamos 1500 requisições por segundo
 
 O que acontece quando recebemos 10000 requisições em um segundo? (Por exemplo)
 
