@@ -33,7 +33,8 @@ public class PaymentController {
 
 		log.info("Payment to be processed {}", userId);
 		return this.paymentRepository.createPayment(userId).flatMap(this.paymentPublisher::onPaymentCreate).flatMap(
-						payment -> Flux.interval(Duration.ofSeconds(1)).doOnNext(it -> log.info("Next tick - {}", it))
+						payment -> Flux.interval(Duration.ofSeconds(1))
+								.doOnNext(it -> log.info("Next tick - {}", it))
 								.flatMap(tick -> this.paymentRepository.getPayment(userId))
 								.filter(it -> Payment.PaymentStatus.APPROVED == it.getStatus()).next())
 				.doOnNext(next -> log.info("Payment processed {}", userId)).timeout(Duration.ofSeconds(20)).retryWhen(

@@ -1,16 +1,18 @@
 package com.example.demo.listeners;
 
-import com.example.demo.models.Payment;
 import com.example.demo.models.Payment.PaymentStatus;
 import com.example.demo.models.PubSubMessage;
 import com.example.demo.repositories.PaymentRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Sinks;
 
+
+@Component
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class PaymentListener implements InitializingBean {
 
 	private final Sinks.Many<PubSubMessage> sink;
@@ -21,7 +23,7 @@ public class PaymentListener implements InitializingBean {
 
 		this.sink.asFlux().subscribe(next -> {
 					log.info("On next message"); this.paymentRepository.processPayment(next.getKey(), PaymentStatus.APPROVED)
-							.doOnNext(it -> log.info("Payment processed on listener")).subscribe(); ;
+							.doOnNext(it -> log.info("Payment processed on listener")).subscribe();
 				}, error -> log.info("On pub-sub listener observe error", error), () -> log.info("On pub-sub listener complete")
 
 		);

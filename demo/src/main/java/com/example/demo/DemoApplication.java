@@ -10,13 +10,12 @@ import reactor.core.publisher.Sinks;
 public class DemoApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
 	@Bean
 	public Sinks.Many<PubSubMessage> sink() {
-
-		return Sinks.many().multicast().onBackpressureBuffer(1000);
+		return Sinks.many().multicast()
+				.onBackpressureBuffer(1000);
 	}
 }
