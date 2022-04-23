@@ -12,22 +12,18 @@ import reactor.core.publisher.Sinks;
 @RequiredArgsConstructor
 @Log4j2
 public class PaymentListener implements InitializingBean {
+
 	private final Sinks.Many<PubSubMessage> sink;
 	private final PaymentRepository paymentRepository;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		this.sink.asFlux()
-				.subscribe(
-						next -> {
-							log.info("On next message");
-							this.paymentRepository.processPayment(next.getKey(), PaymentStatus.APPROVED)
-									.doOnNext(it -> log.info("Payment processed on listener"))
-									.subscribe();;
-						},
-						error -> log.info("On pub-sub listener observe error", error),
-						() -> log.info("On pub-sub listener complete")
 
-				);
+		this.sink.asFlux().subscribe(next -> {
+					log.info("On next message"); this.paymentRepository.processPayment(next.getKey(), PaymentStatus.APPROVED)
+							.doOnNext(it -> log.info("Payment processed on listener")).subscribe(); ;
+				}, error -> log.info("On pub-sub listener observe error", error), () -> log.info("On pub-sub listener complete")
+
+		);
 	}
 }

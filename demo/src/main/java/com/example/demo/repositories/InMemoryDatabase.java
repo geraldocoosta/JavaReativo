@@ -21,19 +21,15 @@ public class InMemoryDatabase implements Database {
 	@SneakyThrows
 	public <T> T save(final String key, final T value) {
 
-		final var data = this.mapper.writeValueAsString(value);
-		DATABASE.put(key, data);
-		sleep(100);
-		return value;
+		final var data = this.mapper.writeValueAsString(value); DATABASE.put(key, data); sleep(100); return value;
 	}
-
 
 	@Override
 	public <T> Optional<T> get(final String key, final Class<T> clazz) {
+
 		return Optional.ofNullable(DATABASE.get(key)).map(data -> {
 			try {
-				sleep(300);
-				return mapper.readValue(data, clazz);
+				sleep(300); return mapper.readValue(data, clazz);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);
 			}

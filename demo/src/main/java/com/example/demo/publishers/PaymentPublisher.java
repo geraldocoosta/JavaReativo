@@ -17,14 +17,10 @@ public class PaymentPublisher {
 	private final ObjectMapper mapper;
 
 	public Mono<Payment> onPaymentCreate(final Payment payment) {
+
 		return Mono.fromCallable(() -> {
-			String userId = payment.getUserId();
-			String data = mapper.writeValueAsString(payment);
-			return new PubSubMessage(userId, data);
-		})
-				.subscribeOn(Schedulers.parallel())
-				.doOnNext(this.sink::tryEmitNext)
-				.thenReturn(payment);
+			String userId = payment.getUserId(); String data = mapper.writeValueAsString(payment); return new PubSubMessage(userId, data);
+		}).subscribeOn(Schedulers.parallel()).doOnNext(this.sink::tryEmitNext).thenReturn(payment);
 	}
 
 }

@@ -28,27 +28,22 @@ public class PaymentController {
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Mono<Payment> createPayment(@RequestBody final NewPaymentInput input) {
+
 		String userId = input.getUserId();
 
 		log.info("Payment to be processed {}", userId);
-		return this.paymentRepository.createPayment(userId)
-				.flatMap(this.paymentPublisher::onPaymentCreate)
-				.flatMap(payment ->
-					 Flux.interval(Duration.ofSeconds(1))
-							 .doOnNext(it -> log.info("Next tick - {}", it) )
+		return this.paymentRepository.createPayment(userId).flatMap(this.paymentPublisher::onPaymentCreate).flatMap(
+						payment -> Flux.interval(Duration.ofSeconds(1)).doOnNext(it -> log.info("Next tick - {}", it))
 								.flatMap(tick -> this.paymentRepository.getPayment(userId))
-								.filter(it -> Payment.PaymentStatus.APPROVED == it.getStatus())
-								.next()
-				)
-				.doOnNext(next -> log.info("Payment processed {}", userId))
-				.timeout(Duration.ofSeconds(20))
-				.retryWhen(
-						Retry.backoff(2, Duration.ofSeconds(1)).doAfterRetry(signal -> log.info("Execution failed... retrying {}", signal.totalRetries()))
-				);
+								.filter(it -> Payment.PaymentStatus.APPROVED == it.getStatus()).next())
+				.doOnNext(next -> log.info("Payment processed {}", userId)).timeout(Duration.ofSeconds(20)).retryWhen(
+						Retry.backoff(2, Duration.ofSeconds(1))
+								.doAfterRetry(signal -> log.info("Execution failed... retrying {}", signal.totalRetries())));
 	}
 
 	@Data
 	public static class NewPaymentInput {
+
 		private String userId;
 	}
 }

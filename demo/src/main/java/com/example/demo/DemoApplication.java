@@ -16,6 +16,7 @@ public class DemoApplication {
 
 	@Bean
 	public Sinks.Many<PubSubMessage> sink() {
+
 		return Sinks.many().multicast().onBackpressureBuffer(1000);
 	}
 }
