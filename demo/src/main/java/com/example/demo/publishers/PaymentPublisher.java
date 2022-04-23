@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Schedulers;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class PaymentPublisher {
 
 	private final Sinks.Many<PubSubMessage> sink;

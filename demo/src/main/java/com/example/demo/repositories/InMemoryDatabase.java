@@ -23,7 +23,7 @@ public class InMemoryDatabase implements Database {
 
 		final var data = this.mapper.writeValueAsString(value);
 		DATABASE.put(key, data);
-		sleep(3_000);
+		sleep(100);
 		return value;
 	}
 
@@ -32,7 +32,7 @@ public class InMemoryDatabase implements Database {
 	public <T> Optional<T> get(final String key, final Class<T> clazz) {
 		return Optional.ofNullable(DATABASE.get(key)).map(data -> {
 			try {
-				sleep(1_000);
+				sleep(300);
 				return mapper.readValue(data, clazz);
 			} catch (JsonProcessingException e) {
 				throw new RuntimeException(e);

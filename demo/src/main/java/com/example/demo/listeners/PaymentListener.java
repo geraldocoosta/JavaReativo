@@ -21,7 +21,9 @@ public class PaymentListener implements InitializingBean {
 				.subscribe(
 						next -> {
 							log.info("On next message");
-							this.paymentRepository.processPayment(next.getKey(), PaymentStatus.APPROVED);
+							this.paymentRepository.processPayment(next.getKey(), PaymentStatus.APPROVED)
+									.doOnNext(it -> log.info("Payment processed on listener"))
+									.subscribe();;
 						},
 						error -> log.info("On pub-sub listener observe error", error),
 						() -> log.info("On pub-sub listener complete")

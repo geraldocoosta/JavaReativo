@@ -41,7 +41,7 @@ public class PaymentController {
 								.next()
 				)
 				.doOnNext(next -> log.info("Payment processed {}", userId))
-				.timeout(Duration.ofSeconds(5))
+				.timeout(Duration.ofSeconds(20))
 				.retryWhen(
 						Retry.backoff(2, Duration.ofSeconds(1)).doAfterRetry(signal -> log.info("Execution failed... retrying {}", signal.totalRetries()))
 				);
