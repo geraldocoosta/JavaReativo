@@ -15,22 +15,21 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class InMemoryDatabase implements Database {
 
-	private static final Map<String, String> DATABASE = new ConcurrentHashMap<>();
+	public static final Map<String, String> DATABASE = new ConcurrentHashMap<>();
 	private final ObjectMapper mapper;
 
 	@Override
 	@SneakyThrows
 	public <T> T save(final String key, final T value) {
-		final var data = this.mapper.writeValueAsString(value); DATABASE.put(key, data); sleep(100); return value;
+		final var data = this.mapper.writeValueAsString(value);
+		DATABASE.put(key, data);
+		return value;
 	}
 
 	@Override
 	@SneakyThrows
 	public <T> Optional<T> get(final String key, final Class<T> clazz) {
-		return Optional.ofNullable(DATABASE.get(key)).map(data -> {
-			sleep(300);
-			return readJsonValue(data, clazz);
-		});
+		return Optional.ofNullable(DATABASE.get(key)).map(data -> readJsonValue(data, clazz));
 	}
 
 	private <T> T readJsonValue( String data, Class<T> clazz) {
@@ -41,8 +40,4 @@ public class InMemoryDatabase implements Database {
 		}
 	}
 
-	@SneakyThrows
-	private void sleep(final long millis) {
-			Thread.sleep(millis);
-	}
 }
