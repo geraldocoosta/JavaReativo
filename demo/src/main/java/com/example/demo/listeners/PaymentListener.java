@@ -19,7 +19,7 @@ public class PaymentListener implements InitializingBean {
 	private final PaymentRepository paymentRepository;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 
 		this.sink.asFlux().subscribe(next -> {
 					log.info("On next message"); this.paymentRepository.processPayment(next.getKey(), PaymentStatus.APPROVED)
